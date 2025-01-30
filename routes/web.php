@@ -3,7 +3,9 @@
 use App\Http\Controllers\Admin\BukuController;
 use App\Http\Controllers\Admin\ClusteringController;
 use App\Http\Controllers\Admin\KategoriController;
+use App\Http\Controllers\Apps\HomeController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Apps\RekomendasiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,9 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('pages.user.index', ['menu' => 'dashboard']);
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -49,6 +49,17 @@ Route::prefix('admin')->middleware('auth', 'role:admin')->group(function () {
         Route::get('/', [ClusteringController::class, 'index'])->name('clustering.index');
         Route::post('/process', [ClusteringController::class, 'process'])->name('clustering.process');
         Route::get('/results/{clusteringId}', [ClusteringController::class, 'showResults'])->name('clustering.results');
+    });
+});
+
+Route::prefix('user')->middleware('auth', 'role:user')->group(function () {
+    // Rute untuk halaman utama pengguna
+    Route::get('/', [HomeController::class, 'index'])->name('user.dashboard');
+
+    // Rute untuk rekomendasi buku
+    Route::prefix('rekomendasi')->group(function () {
+        Route::get('/', [RekomendasiController::class, 'index'])->name('user.rekomendasi.index');
+        Route::post('/generate', [RekomendasiController::class, 'generate'])->name('user.rekomendasi.generate');
     });
 });
 

@@ -42,7 +42,7 @@
 
                                 <div class="row">
                                     @foreach ($clusterResults as $clusterName => $books)
-                                        <div class="col-md-6 col-lg-4">
+                                        <div class="col-md-6 col-lg-4"> 
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h6 class="font-weight-bold">{{ $clusterName }}</h6>
