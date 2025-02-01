@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => $menu])
+@extends('layouts.app', ['title' => 'Modules > DataTables'])
 @section('content')
     @push('styles')
         <link rel="stylesheet" href="{{ asset('library/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -24,63 +24,32 @@
                             <div class="card-header">
                                 <h4>Data {{ $menu }}</h4>
                                 <div class="ml-auto">
-                                    <a href="{{ route('buku.create') }}" class="btn btn-primary">Tambah Data</a>
+                                    <a href="{{ route('tag.create') }}" class="btn btn-primary">Tambah Data</a>
                                 </div>
                             </div>
-
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered" id="table-1">
+                                    <table class="table table-striped" id="table-1">
                                         <thead>
                                             <tr>
-                                                <th>No</th>
-                                                <th>Gambar</th>
-                                                <th>Judul Buku</th>
-                                                <th>Penulis</th>
-                                                <th>Penerbit</th>
-                                                <th>Tahun Terbit</th>
-                                                <th>ISBN</th>
-                                                <th>Deskripsi</th>
-                                                <th>Kategori</th>
-                                                <th>Sub Kategori</th>
-                                                <th>Tag</th>
-                                                <th>Bahasa</th>
-                                                <th>Jumlah Halaman</th>
-                                                <th>Aksi</th>
+                                                <th class="text-center">
+                                                    No
+                                                </th>
+                                                <th>Nama tag</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
-
                                         <tbody>
-                                            @foreach ($buku as $v)
+                                            @foreach ($tag as $v)
                                                 <tr>
                                                     <td>
                                                         {{ $loop->iteration }}
                                                     </td>
+                                                    <td>{{ $v->nama_tag }}</td>
                                                     <td>
-                                                        <img src="{{ asset('images/buku/' . $v->image) }}" alt="image"
-                                                            class="rounded-circle" width="35">
-                                                    </td>
-                                                    <td>{{ $v->judul }}</td>
-                                                    <td>{{ $v->penulis }}</td>
-                                                    <td>{{ $v->penerbit }}</td>
-                                                    <td>{{ $v->tahun_terbit }}</td>
-                                                    <td>{{ $v->isbn }}</td>
-                                                    <td>{!! $v->deskripsi !!}</td>
-                                                    <td>{{ $v->kategori->nama_kategori }}</td>
-                                                    <td>{{ $v->kategori->sub_kategori }}</td>
-                                                    <td>
-                                                        @foreach ($v->tags() as $tagName)
-                                                            <span class="badge badge-primary">{{ $tagName }}</span>
-                                                        @endforeach
-
-                                                    </td>
-                                                    <td>{{ $v->bahasa }}</td>
-                                                    <td>{{ $v->jumlah_halaman }}</td>
-
-                                                    <td>
-                                                        <a href="{{ route('buku.edit', $v->id) }}"
+                                                        <a href="{{ route('tag.edit', $v->id) }}"
                                                             class="btn btn-warning">Edit</a>
-                                                        <form action="{{ route('buku.delete', $v->id) }}" method="POST"
+                                                        <form action="{{ route('tag.delete', $v->id) }}" method="POST"
                                                             class="d-inline">
                                                             @csrf
                                                             @method('delete')

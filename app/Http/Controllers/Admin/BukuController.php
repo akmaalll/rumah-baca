@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Buku;
 use App\Models\Kategori;
 use App\Models\KategoriBuku;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class BukuController extends Controller
@@ -17,7 +18,10 @@ class BukuController extends Controller
     {
         $menu = 'buku';
         $buku = Buku::all();
-        return view('pages.buku.index', compact('menu', 'buku'));
+        $tag = Tag::all();
+        // dd($buku);
+
+        return view('pages.buku.index', compact('menu', 'buku', 'tag'));
     }
 
     /**
@@ -26,10 +30,12 @@ class BukuController extends Controller
     public function create()
     {
         $menu = 'buku';
+        $tag = Tag::all();
+
         $kategori = KategoriBuku::all();
         // dd($kategori);
 
-        return view('pages.buku.create', compact('menu', 'kategori'));
+        return view('pages.buku.create', compact('menu', 'kategori', 'tag'));
     }
 
     /**
@@ -45,6 +51,7 @@ class BukuController extends Controller
             $req['image'] = $imgName;
         }
         $req['tag'] = implode(',', $request->tag);
+        // dd($req);
 
         Buku::create($req);
         return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan');
@@ -65,9 +72,10 @@ class BukuController extends Controller
     {
         $menu = 'buku';
         $kategori = KategoriBuku::all();
+        $tag = Tag::all();
         $data = Buku::findOrFail($id);
         // dd($data);
-        return view('pages.buku.edit', compact('data', 'menu', 'kategori'));
+        return view('pages.buku.edit', compact('data', 'menu', 'kategori', 'tag'));
     }
 
     /**

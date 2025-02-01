@@ -36,4 +36,9 @@ class Buku extends Model
     {
         return $this->belongsTo(KategoriBuku::class,  'kategori_id');
     }
+    public function tags()
+    {
+        $tagIds = explode(',', $this->tag); // Mengubah "1,2" menjadi array [1,2]
+        return Tag::whereIn('id', $tagIds)->pluck('nama_tag');
+    }
 }

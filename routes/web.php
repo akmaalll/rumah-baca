@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BukuController;
 use App\Http\Controllers\Admin\ClusteringController;
 use App\Http\Controllers\Admin\KategoriController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Apps\HomeController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Apps\RekomendasiController;
@@ -43,6 +44,14 @@ Route::prefix('admin')->middleware('auth', 'role:admin')->group(function () {
         Route::get('/edit/{id}', [KategoriController::class, 'edit'])->name('kategori.edit');
         Route::put('/update/{id}', [KategoriController::class, 'update'])->name('kategori.update');
         Route::delete('/delete/{id}', [KategoriController::class, 'destroy'])->name('kategori.delete');
+    });
+    Route::prefix('tag')->group(function () {
+        Route::get('/', [TagController::class, 'index'])->name('tag.index');
+        Route::get('/create', [TagController::class, 'create'])->name('tag.create');
+        Route::post('/store', [TagController::class, 'store'])->name('tag.store');
+        Route::get('/edit/{id}', [TagController::class, 'edit'])->name('tag.edit');
+        Route::put('/update/{id}', [TagController::class, 'update'])->name('tag.update');
+        Route::delete('/delete/{id}', [TagController::class, 'destroy'])->name('tag.delete');
     });
 
     Route::prefix('clustering')->group(function () {
