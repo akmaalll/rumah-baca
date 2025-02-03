@@ -61,7 +61,7 @@
                                             @foreach ($prosesHistory as $proses)
                                                 <tr>
                                                     <td>{{ $proses->id }}</td>
-                                                    <td>{{ $proses->admin->nama_lengkap }}</td>
+                                                    <td>{{ $proses->user->nama_lengkap }}</td>
                                                     <td>{{ $proses->jumlah_cluster }}</td>
                                                     <td>
                                                         <span

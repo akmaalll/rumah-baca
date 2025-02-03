@@ -16,11 +16,6 @@ class Buku extends Model
         'penerbit',
         'tahun_terbit',
         'isbn',
-        'deskripsi',
-        'tag',
-        'bahasa',
-        'jumlah_halaman',
-        'image'
     ];
 
     public function kelompok()
@@ -28,17 +23,12 @@ class Buku extends Model
         return $this->hasOne(ClusterBuku::class);
     }
 
-    public function rekomendasi()
-    {
-        return $this->hasMany(RekomendasiBuku::class);
-    }
     public function kategori()
     {
         return $this->belongsTo(KategoriBuku::class,  'kategori_id');
     }
-    public function tags()
+    public function rekomendasi()
     {
-        $tagIds = explode(',', $this->tag); // Mengubah "1,2" menjadi array [1,2]
-        return Tag::whereIn('id', $tagIds)->pluck('nama_tag');
+        return $this->hasMany(RekomendasiBuku::class);
     }
 }

@@ -12,10 +12,9 @@ class Clustering extends Model
         'user_id',
         'jumlah_cluster',
         'status',
-        'catatan'
     ];
 
-    public function admin()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }

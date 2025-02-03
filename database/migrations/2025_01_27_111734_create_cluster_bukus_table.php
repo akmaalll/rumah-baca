@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('cluster_bukus', function (Blueprint $table) {
             $table->id();
             $table->foreignId('buku_id')->constrained('bukus')->cascadeOnDelete();
-            $table->integer('level_kelompok');
             $table->string('nama_kelompok', 100);
             $table->timestamps();
         });

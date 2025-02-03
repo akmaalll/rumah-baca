@@ -55,9 +55,8 @@ Route::prefix('admin')->middleware('auth', 'role:admin')->group(function () {
     });
 
     Route::prefix('clustering')->group(function () {
-        Route::get('/', [ClusteringController::class, 'index'])->name('clustering.index');
-        Route::post('/process', [ClusteringController::class, 'process'])->name('clustering.process');
-        Route::get('/results/{clusteringId}', [ClusteringController::class, 'showResults'])->name('clustering.results');
+        Route::get('/', [ClusteringController::class, 'clusterBuku'])->name('clustering.index');
+        Route::get('/hasil-cluster', [ClusteringController::class, 'hasilClustering'])->name('clustering.hasil');
     });
 });
 

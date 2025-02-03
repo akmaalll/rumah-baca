@@ -40,12 +40,8 @@
                                                 <th>Penerbit</th>
                                                 <th>Tahun Terbit</th>
                                                 <th>ISBN</th>
-                                                <th>Deskripsi</th>
                                                 <th>Kategori</th>
                                                 <th>Sub Kategori</th>
-                                                <th>Tag</th>
-                                                <th>Bahasa</th>
-                                                <th>Jumlah Halaman</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -64,18 +60,9 @@
                                                     <td>{{ $v->penulis }}</td>
                                                     <td>{{ $v->penerbit }}</td>
                                                     <td>{{ $v->tahun_terbit }}</td>
-                                                    <td>{{ $v->isbn }}</td>
-                                                    <td>{!! $v->deskripsi !!}</td>
+                                                    <td>{{ $v->isbn }}</td> 
                                                     <td>{{ $v->kategori->nama_kategori }}</td>
                                                     <td>{{ $v->kategori->sub_kategori }}</td>
-                                                    <td>
-                                                        @foreach ($v->tags() as $tagName)
-                                                            <span class="badge badge-primary">{{ $tagName }}</span>
-                                                        @endforeach
-
-                                                    </td>
-                                                    <td>{{ $v->bahasa }}</td>
-                                                    <td>{{ $v->jumlah_halaman }}</td>
 
                                                     <td>
                                                         <a href="{{ route('buku.edit', $v->id) }}"

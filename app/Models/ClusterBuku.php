@@ -10,7 +10,6 @@ class ClusterBuku extends Model
 
     protected $fillable = [
         'buku_id',
-        'level_kelompok',
         'nama_kelompok'
     ];
 
