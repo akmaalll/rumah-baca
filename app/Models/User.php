@@ -61,9 +61,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Clustering::class, 'user_id');
     }
-
-    public function isAdmin()
-    {
-        return $this->role === 'admin';
-    }
 }

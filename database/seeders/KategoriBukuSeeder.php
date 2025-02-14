@@ -16,31 +16,11 @@ class KategoriBukuSeeder extends Seeder
     public function run()
     {
         $categories = [
-            [
-                'nama_kategori' => 'Teknologi',
-                'sub_kategori' => 'Pemrograman',
-                'deskripsi' => 'Buku-buku tentang pemrograman dan pengembangan software'
-            ],
-            [
-                'nama_kategori' => 'Teknologi',
-                'sub_kategori' => 'Data Science',
-                'deskripsi' => 'Buku-buku tentang analisis data dan machine learning'
-            ],
-            [
-                'nama_kategori' => 'Bisnis',
-                'sub_kategori' => 'Manajemen',
-                'deskripsi' => 'Buku-buku tentang manajemen dan kepemimpinan'
-            ],
-            [
-                'nama_kategori' => 'Bisnis',
-                'sub_kategori' => 'Kewirausahaan',
-                'deskripsi' => 'Buku-buku tentang memulai dan mengelola bisnis'
-            ],
-            [
-                'nama_kategori' => 'Sains',
-                'sub_kategori' => 'Fisika',
-                'deskripsi' => 'Buku-buku tentang ilmu fisika'
-            ]
+            ['nama_kategori' => 'Teknologi', 'sub_kategori' => 'Pemrograman'],
+            ['nama_kategori' => 'Sastra', 'sub_kategori' => 'Novel'],
+            ['nama_kategori' => 'Sains', 'sub_kategori' => 'Fisika'],
+            ['nama_kategori' => 'Sejarah', 'sub_kategori' => 'Perang Dunia'],
+            ['nama_kategori' => 'Bisnis', 'sub_kategori' => 'Manajemen']
         ];
 
         foreach ($categories as $category) {

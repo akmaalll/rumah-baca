@@ -14,12 +14,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            KategoriBukuSeeder::class,
-            BukuSeeder::class,
-            ClusterBukuSeeder::class,
-            PreferensiUserSeeder::class,
-            RekomendasiBukuSeeder::class,
-            ClusteringSeeder::class,
+            // KategoriBukuSeeder::class,
+            // BukuSeeder::class,
+            // ClusterBukuSeeder::class,
+            // PreferensiUserSeeder::class,
+            // RekomendasiBukuSeeder::class,
+            // ClusteringSeeder::class,
         ]);
     }
 }

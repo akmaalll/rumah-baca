@@ -18,17 +18,7 @@ class ClusteringSeeder extends Seeder
 
         // Buat beberapa record proses clustering
         Clustering::create([
-            'user_id' => $admin->id,
-            'jumlah_cluster' => 3,
-            'status' => 'completed',
-            'catatan' => 'Proses clustering pertama'
-        ]);
-
-        Clustering::create([
-            'user_id' => $admin->id,
-            'jumlah_cluster' => 5,
-            'status' => 'completed',
-            'catatan' => 'Proses clustering dengan parameter berbeda'
+            ['user_id' => 1, 'jumlah_cluster' => 3],
         ]);
     }
 }

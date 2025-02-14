@@ -45,3 +45,5 @@
     <!-- END THEME STYLES -->
 
     <link rel="shortcut icon" href="favicon.ico" />
+
+    <link rel="stylesheet" href="{{ asset('library/izitoast/dist/css/iziToast.min.css') }}">

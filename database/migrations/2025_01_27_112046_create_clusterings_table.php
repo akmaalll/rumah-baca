@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->integer('jumlah_cluster');
             $table->enum('status', ['pending', 'processing', 'completed', 'failed']);
-            $table->text('catatan')->nullable();
             $table->timestamps();
         });
     }

@@ -3,7 +3,7 @@
 @section('content')
     <div class="c-layout-page">
         <!-- Slider Section -->
-        <section class="c-layout-revo-slider c-layout-revo-slider-4" dir="ltr">
+        {{-- <section class="c-layout-revo-slider c-layout-revo-slider-4" dir="ltr">
             <div class="tp-banner-container c-theme">
                 <div class="tp-banner rev_slider" data-version="5.0">
                     <ul>
@@ -34,13 +34,13 @@
                     </ul>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         <!-- Popular Categories Section -->
         <section class="c-content-box c-size-md c-bg-white">
             <div class="container">
                 <div class="c-content-title-1">
-                    <h3 class="c-center c-font-uppercase c-font-bold">Kategori Populer</h3>
+                    <h3 class="c-center c-font-uppercase c-font-bold">Hasil Clustering</h3>
                     <div class="c-line-center"></div>
                 </div>
 
@@ -67,31 +67,22 @@
                                 <div class="cbp-item {{ Str::slug($clusterName) }}">
                                     <div class="cbp-caption">
                                         <div class="cbp-caption-defaultWrap">
-                                            @if ($book->buku->image)
-                                                <img src="{{ asset('images/buku/' . $book->buku->image) }}"
+                                            @if (!empty($book->buku->gambar) && file_exists(public_path('images/buku/' . $book->buku->gambar)))
+                                                <img src="{{ asset('images/buku/' . $book->buku->gambar) }}"
                                                     alt="{{ $book->buku->judul }}" class="img-fluid book-thumbnail">
                                             @else
-                                                <div class="no-image-placeholder">
-                                                    <i class="fa fa-book"></i>
-                                                </div>
+                                                <img src="{{ asset('images/buku/no-image.png') }}" alt="No Image Available"
+                                                    class="img-fluid book-thumbnail">
                                             @endif
+
                                         </div>
                                     </div>
-                                    <a href="" {{-- <a href="{{ route('books.show', $book->buku->id) }}" --}} class="cbp-l-grid-masonry-projects-title">
-                                        {{ Str::limit($book->buku->judul, 50) }}
+                                    <a href="{{ route('detail.buku', $book->buku->id) }}" {{-- <a href="{{ route('books.show', $book->buku->id) }}" --}} class="cbp-l-grid-masonry-projects-title">
+                                        {{ Str::limit($book->buku->judul, 50) }}    
                                     </a>
                                     <div class="cbp-l-grid-masonry-projects-desc">
                                         <p class="author">{{ $book->buku->penulis }}</p>
                                         <p class="year">{{ $book->buku->tahun_terbit }}</p>
-                                        @if ($book->buku->tag)
-                                            <div class="tags mt-2">
-                                                @foreach (explode(',', $book->buku->tag) as $tag)
-                                                    <span class="badge badge-primary">
-                                                        {{ trim($tag) }}
-                                                    </span>
-                                                @endforeach
-                                            </div>
-                                        @endif
                                     </div>
                                 </div>
                             @endforeach
@@ -99,50 +90,6 @@
                             <p class="text-center">No books found.</p>
                         @endforelse
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Recommended Novels Section -->
-        <section class="c-content-box c-size-md c-bg-grey">
-            <div class="container">
-                <div class="c-content-title-1">
-                    <h3 class="c-center c-font-uppercase c-font-bold">Rekomendasi Novel</h3>
-                    <div class="c-line-center c-theme-bg"></div>
-                </div>
-                {{-- <div class="row">
-                    @forelse ($recommendedNovels as $novel)
-                        <div class="col-md-3 col-sm-6 mb-4">
-                            <div class="c-novel-card">
-                                <img src="{{ asset('storage/novels/' . $novel->image) }}" class="img-fluid"
-                                    alt="{{ $novel->title }}">
-                                <h5 class="c-font-bold c-font-uppercase">{{ $novel->title }}</h5>
-                                <p>Penulis: {{ $novel->author }}</p>
-                                <a href="{{ route('novels.show', $novel->id) }}"
-                                    class="btn c-btn-square c-btn-bold c-theme-btn">
-                                    Baca Sekarang
-                                </a>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="col-12">
-                            <p class="text-center">No recommended novels available.</p>
-                        </div>
-                    @endforelse
-                </div> --}}
-            </div>
-        </section>
-
-        <!-- Call to Action Section -->
-        <section class="c-content-box c-size-md c-bg-img-center"
-            style="background-image: url('{{ asset('images/cta-bg.jpg') }}');">
-            <div class="container">
-                <div class="c-content-title-1 c-center">
-                    <h3 class="c-font-uppercase c-font-bold c-font-white">Ayo Mulai Membaca Sekarang</h3>
-                    <div class="c-line-center c-theme-bg"></div>
-                    <a href="" class="btn c-btn-square c-btn-bold c-theme-btn">
-                        Jelajahi Sekarang
-                    </a>
                 </div>
             </div>
         </section>
@@ -207,33 +154,23 @@
     @push('styles')
         <style>
             .book-thumbnail {
-                width: 150px;
-                height: 200px;
+                width: 40px;
+                height: 40px;
                 object-fit: cover;
-                border-radius: 8px;
+                border-radius: 5px;
+                transition: transform 0.2s ease-in-out;
             }
 
-            .no-image-placeholder {
-                width: 150px;
-                height: 200px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: #f5f5f5;
-                color: #999;
-                border-radius: 8px;
+            .book-thumbnail:hover {
+                transform: scale(1.05);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
             }
+
 
             .cbp-caption-defaultWrap {
                 display: flex;
                 justify-content: center;
                 padding: 10px;
-            }
-
-            .book-thumbnail:hover {
-                transform: scale(1.05);
-                transition: transform 0.3s ease;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
 
             .c-novel-card {

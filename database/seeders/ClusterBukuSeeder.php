@@ -14,14 +14,12 @@ class ClusterBukuSeeder extends Seeder
      */
     public function run(): void
     {
-        $buku = Buku::all();
-        
-        foreach ($buku as $index => $b) {
-            ClusterBuku::create([
-                'buku_id' => $b->id,
-                'level_kelompok' => 1,
-                'nama_kelompok' => 'Kelompok ' . ceil(($index + 1) / 3) // 3 buku per kelompok
-            ]);
-        }
+        ClusterBuku::create([
+            ['buku_id' => 1, 'nama_kelompok' => 'Kelompok A'],
+            ['buku_id' => 2, 'nama_kelompok' => 'Kelompok B'],
+            ['buku_id' => 3, 'nama_kelompok' => 'Kelompok A'],
+            ['buku_id' => 4, 'nama_kelompok' => 'Kelompok C'],
+            ['buku_id' => 5, 'nama_kelompok' => 'Kelompok B']
+        ]);
     }
 }

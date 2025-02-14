@@ -81,7 +81,7 @@
                                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">ISBN</label>
                                         <div class="col-sm-12 col-md-7">
                                             <input type="number" class="form-control" name="isbn"
-                                                value="{{ $data->isbn }}" required>
+                                                value="{{ $data->isbn }}">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-4">
@@ -89,14 +89,14 @@
                                             Halaman</label>
                                         <div class="col-sm-12 col-md-7">
                                             <input type="number" class="form-control" name="jumlah_halaman"
-                                                value="{{ $data->jumlah_halaman }}" required>
+                                                value="{{ $data->jumlah_halaman }}">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-4">
                                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Bahasa</label>
                                         <div class="col-sm-12 col-md-7">
                                             <input type="text" class="form-control" name="bahasa"
-                                                value="{{ $data->bahasa }}" required>
+                                                value="{{ $data->bahasa }}">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-4">
@@ -110,18 +110,16 @@
                                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Tag</label>
                                         <div class="col-sm-12 col-md-7">
                                             @php
-                                                $tags = explode(',', $data->tag); // Mengubah string tag menjadi array
+                                                $selectedTags = explode(',', $data->tag); // Mengubah string "1,2" menjadi array
                                             @endphp
 
                                             <select class="form-control selectric" multiple name="tag[]">
-                                                <option value="News" @if (in_array('News', old('tag', $tags))) selected @endif>
-                                                    News</option>
-                                                <option value="Political" @if (in_array('Political', old('tag', $tags))) selected @endif>
-                                                    Political</option>
-                                                <option value="Article" @if (in_array('Article', old('tag', $tags))) selected @endif>
-                                                    Article</option>
-                                                <option value="Updates" @if (in_array('Updates', old('tag', $tags))) selected @endif>
-                                                    Updates</option>
+                                                @foreach ($tag as $t)
+                                                    <option value="{{ $t->id }}"
+                                                        @if (in_array($t->id, $selectedTags)) selected @endif>
+                                                        {{ $t->nama_tag }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>

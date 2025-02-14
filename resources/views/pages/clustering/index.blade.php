@@ -29,58 +29,18 @@
                             </div>
 
                             <div class="card-body">
-                                <form action="{{ route('clustering.process') }}" method="POST">
+                                <form action="{{ route('clustering.proses') }}" method="GET">
                                     @csrf
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         <label for="jumlah_cluster">Jumlah Cluster</label>
                                         <input type="number" class="form-control" id="jumlah_cluster" name="jumlah_cluster"
-                                            min="2" required>
-                                    </div>
+                                            min="2">
+                                    </div> --}}
                                     <button type="submit" class="btn btn-primary">Mulai Clustering</button>
                                 </form>
                             </div>
 
-                            <div class="card">
-                                <div class="card-header">
-                                    History Proses Clustering
-                                </div>
-                                <div class="card-body">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Admin</th>
-                                                <th>Jumlah Cluster</th>
-                                                <th>Status</th>
-                                                <th>Tanggal</th>
-                                                <th>Catatan</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($prosesHistory as $proses)
-                                                <tr>
-                                                    <td>{{ $proses->id }}</td>
-                                                    <td>{{ $proses->admin->nama_lengkap }}</td>
-                                                    <td>{{ $proses->jumlah_cluster }}</td>
-                                                    <td>
-                                                        <span
-                                                            class="badge badge-{{ $proses->status === 'completed' ? 'success' : 'warning' }}">
-                                                            {{ $proses->status }}
-                                                        </span>
-                                                    </td>
-                                                    <td>{{ $proses->created_at->format('d/m/Y H:i') }}</td>
-                                                    <td>{{ $proses->catatan }}</td>
-                                                    <td>
-                                                        <a href="{{ route('clustering.results', $proses->id) }}"
-                                                            class="btn btn-primary">View</a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            {{--  --}}
                         </div>
                     </div>
                 </div>

@@ -99,11 +99,9 @@
                                         <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Tag</label>
                                         <div class="col-sm-12 col-md-7">
                                             <select class="form-control selectric" multiple="" name="tag[]">
-                                                <option>Pilih Tag</option>
-                                                <option>News</option>
-                                                <option>Political</option>
-                                                <option>Article</option>
-                                                <option>Updates</option>
+                                                @foreach ($tag as $t)
+                                                    <option value="{{ $t->id }}">{{ $t->nama_tag }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>

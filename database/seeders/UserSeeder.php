@@ -20,16 +20,6 @@ class UserSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => Hash::make('123'),
             'nama_lengkap' => 'Administrator',
-            'role' => 'admin'
-        ]);
-
-        // User default
-        User::create([
-            'username' => 'user',
-            'email' => 'user@gmail.com',
-            'password' => Hash::make('123'),
-            'nama_lengkap' => 'User Test',
-            'role' => 'user'
         ]);
     }
 }

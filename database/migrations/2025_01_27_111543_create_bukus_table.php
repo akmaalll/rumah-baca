@@ -15,15 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('kategori_id')->constrained('kategori_bukus')->cascadeOnDelete();
             $table->string('judul');
-            $table->string('penulis', 100)->nullable();
-            $table->string('penerbit', 100)->nullable();
+            $table->string('penulis', 255)->nullable();
+            $table->string('penerbit', 255)->nullable();
             $table->integer('tahun_terbit')->nullable();
-            $table->string('isbn', 13)->nullable();
-            $table->text('deskripsi')->nullable();
-            $table->text('tag')->nullable();
-            $table->string('bahasa', 50)->nullable();
-            $table->integer('jumlah_halaman')->nullable();
-            $table->string('image')->nullable();
+            $table->string('isbn', 20)->nullable();
             $table->timestamps();
         });
     }

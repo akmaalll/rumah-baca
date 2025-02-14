@@ -68,3 +68,25 @@
     type="text/javascript"></script>
 <script src="{{ asset('app/theme/assets/demos/default/js/scripts/pages/fullwidth-gallery.js') }}"
     type="text/javascript"></script>
+
+
+<script src="{{ asset('library/izitoast/dist/js/iziToast.min.js') }}"></script>
+<script src="{{ asset('js/page/modules-toastr.js') }}"></script>
+
+<script>
+    @if (session('success'))
+        iziToast.success({
+            title: 'Sukses',
+            message: "{{ session('success') }}",
+            position: 'topRight'
+        });
+    @endif
+
+    @if (session('error'))
+        iziToast.error({
+            title: 'Error',
+            message: "{{ session('error') }}",
+            position: 'topRight'
+        });
+    @endif
+</script>

@@ -13,7 +13,7 @@ class RoleMiddleware
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */public function handle($request, Closure $next, $role)
+     */ public function handle($request, Closure $next, $role)
     {
         // Periksa apakah pengguna sudah login
         if (!Auth::check()) {
@@ -23,7 +23,7 @@ class RoleMiddleware
         // Periksa role pengguna
         $user = Auth::user();
         if ($user->role !== $role) {
-            return redirect('/')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+            return redirect('/')->with('error', 'Anda tidak memiliki akses ke halaman ini. Silahkan Login terlebih dahulu');
         }
 
         return $next($request);

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -41,5 +43,29 @@ class AuthController extends Controller
     {
         Auth::logout();
         return redirect('/login')->with('success', 'Anda berhasil logout.');
+    }
+
+    public function register()
+    {
+        return view('pages.auth.register');
+    }
+
+    public function store(Request $request)
+    {
+        // dd($request->all()); 
+        // Buat user baru
+        $user = User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'nama_lengkap' => $request->nama_lengkap,
+            'role' => 'user',
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Login user setelah registrasi
+        Auth::login($user);
+
+        // Redirect ke form preferensi
+        return redirect()->route('preferensi.form')->with('success', 'Anda berhasil register.');
     }
 }

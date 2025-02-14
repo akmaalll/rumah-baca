@@ -14,7 +14,7 @@ class KategoriController extends Controller
      */
     public function index()
     {
-        $menu = 'Kategori';
+        $menu = 'kategori';
         $kategori = KategoriBuku::all();
         return view('pages.kategori.index', compact('menu', 'kategori'));
     }
@@ -24,7 +24,7 @@ class KategoriController extends Controller
      */
     public function create()
     {
-        $menu = 'Kategori';
+        $menu = 'kategori';
         $kategori = KategoriBuku::all();
 
         return view('pages.kategori.create', compact('menu', 'kategori'));

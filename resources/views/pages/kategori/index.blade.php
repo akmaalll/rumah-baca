@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Modules > DataTables'])
+@extends('layouts.app', ['title' => $menu])
 @section('content')
     @push('styles')
         <link rel="stylesheet" href="{{ asset('library/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}">

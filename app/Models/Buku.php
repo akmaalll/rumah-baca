@@ -17,10 +17,7 @@ class Buku extends Model
         'tahun_terbit',
         'isbn',
         'deskripsi',
-        'tag',
-        'bahasa',
-        'jumlah_halaman',
-        'image'
+        'gambar'
     ];
 
     public function kelompok()
@@ -28,12 +25,12 @@ class Buku extends Model
         return $this->hasOne(ClusterBuku::class);
     }
 
-    public function rekomendasi()
-    {
-        return $this->hasMany(RekomendasiBuku::class);
-    }
     public function kategori()
     {
         return $this->belongsTo(KategoriBuku::class,  'kategori_id');
+    }
+    public function rekomendasi()
+    {
+        return $this->hasMany(RekomendasiBuku::class);
     }
 }

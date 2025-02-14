@@ -1,7 +1,8 @@
 @extends('layouts.auth', ['title' => 'Login'])
 @section('content')
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('library/bootstrap-social/bootstrap-social.css') }}">
+        <link rel="stylesheet" href="{{ asset('library/bootzstrap-social/bootstrap-social.css') }}">
+        <link rel="stylesheet" href="{{ asset('library/izitoast/dist/css/iziToast.min.css') }}">
     @endpush
 
     <div class="card card-primary">
@@ -25,7 +26,7 @@
                     <div class="d-block">
                         <label for="password" class="control-label">Password</label>
                         <div class="float-right">
-                            <a href="{{ route('auth.forgot-password')}}" class="text-small">
+                            <a href="{{ route('auth.forgot-password') }}" class="text-small">
                                 Forgot Password?
                             </a>
                         </div>
@@ -34,12 +35,8 @@
                     <div class="invalid-feedback">
                         please fill in your password
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" name="remember" class="custom-control-input" tabindex="3" id="remember-me">
-                        <label class="custom-control-label" for="remember-me">Remember Me</label>
+                    <div class="mt-5 text-center">
+                        Don't have an account? <a href="{{ route('register') }}">Create new one</a>
                     </div>
                 </div>
 
@@ -49,28 +46,30 @@
                     </button>
                 </div>
             </form>
-            <div class="text-center mt-4 mb-3">
-                <div class="text-job text-muted">Login With Social</div>
-            </div>
-            <div class="row sm-gutters">
-                <div class="col-6">
-                    <a class="btn btn-block btn-social btn-facebook">
-                        <span class="fab fa-facebook"></span> Facebook
-                    </a>
-                </div>
-                <div class="col-6">
-                    <a class="btn btn-block btn-social btn-twitter">
-                        <span class="fab fa-twitter"></span> Twitter
-                    </a>
-                </div>
-            </div>
 
         </div>
     </div>
-    <div class="mt-5 text-muted text-center">
-        Don't have an account? <a href="{{ route('auth.register')}}">Create One</a>
-    </div>
 
     @push('scripts')
+        <script src="{{ asset('library/izitoast/dist/js/iziToast.min.js') }}"></script>
+        <script src="{{ asset('js/page/modules-toastr.js') }}"></script>
+
+        <script>
+            @if(session('success'))
+                iziToast.success({
+                    title: 'Sukses',
+                    message: "{{ session('success') }}",
+                    position: 'topRight'
+                });
+            @endif
+    
+            @if(session('error'))
+                iziToast.error({
+                    title: 'Error',
+                    message: "{{ session('error') }}",
+                    position: 'topRight'
+                });
+            @endif
+        </script>
     @endpush
 @endsection
