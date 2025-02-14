@@ -16,6 +16,8 @@ class Buku extends Model
         'penerbit',
         'tahun_terbit',
         'isbn',
+        'deskripsi',
+        'gambar'
     ];
 
     public function kelompok()

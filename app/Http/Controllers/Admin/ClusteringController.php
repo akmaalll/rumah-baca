@@ -5,177 +5,251 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Buku;
 use App\Models\ClusterBuku;
-use App\Models\Clustering;
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ClusteringController extends Controller
 {
+    // Constants for clustering parameters
+    private const MAX_CLUSTERS = 12;
+    private const LINKAGE_METHODS = [
+        'SINGLE' => 'single',
+        'COMPLETE' => 'complete',
+        'AVERAGE' => 'average'
+    ];
+
+    public function index()
+    {
+        return view('pages.clustering.index', [
+            'menu' => 'clustering'
+        ]);
+    }
+
     public function clusterBuku()
     {
-        $buku = Buku::with('kategori')->get();
+        $books = Buku::with('kategori')->get();
 
-        if ($buku->isEmpty()) {
+        if ($books->isEmpty()) {
             return response()->json([
                 'message' => 'Data buku kosong'
             ], 404);
         }
 
-        $data = [];
-        foreach ($buku as $item) {
-            $nama_kategori = $item->kategori->nama_kategori;
-            $sub_kategori = $item->kategori->sub_kategori;
-            // Contoh fitur: id_kategori, tahun_terbit (bisa disesuaikan)
-            $data[] = [
-                $item->kategori_id,
-                $this->labelEncode($sub_kategori),
-                $item->tahun_terbit,
-                $this->labelEncode($nama_kategori)
-            ];
-        }
-
-        $data = $this->normalizeData($data);
-
-        // Jalankan Hierarchical Clustering manual
-        $clusters = $this->hierarchicalClustering($data);
+        // Prepare features for clustering
+        $features = $this->prepareFeatures($books);
+        $normalizedFeatures = $this->normalizeFeatures($features);
 
         try {
-            ClusterBuku::truncate();
+            // Perform hierarchical clustering with complete linkage
+            $clusters = $this->performHierarchicalClustering(
+                $normalizedFeatures,
+                self::MAX_CLUSTERS,
+                self::LINKAGE_METHODS['SINGLE']
+            );
 
-            // Loop melalui hasil clustering
-            foreach ($clusters as $label_klaster => $indices) {
-                foreach ($indices as $index) {
-                    // Ambil buku berdasarkan index
-                    $buku_terpilih = $buku[$index];
+            // Save clustering results
+            $this->saveClusteringResults($clusters, $books);
 
-                    // Simpan ke tabel klaster_buku
-                    ClusterBuku::create([
-                        'buku_id' => $buku_terpilih->id,
-                        'nama_kelompok' => 'Klaster ' . ($label_klaster + 1)
-                    ]);
-                }
-            }
-
-            return response()->json(['message' => 'Clustering berhasil dilakukan.'], 200);
+            return redirect()->route('clustering.hasil')->with('success', 'Clustering berhasil dilakukan.');
         } catch (Exception $e) {
             return response()->json(['message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
 
-    private function normalizeData(array $data): array
+    private function prepareFeatures($books): array
     {
-        $minYear = min(array_column($data, 2)); // Ambil tahun terbit terkecil
-        $maxYear = max(array_column($data, 2)); // Ambil tahun terbit terbesar
+        $features = [];
+        $labelEncoder = new LabelEncoder();
 
-        $normalizedData = [];
-        foreach ($data as $item) {
-            $normalizedData[] = [
-                $item[0], // kategori_id
-                $item[1], // sub_kategori
-                ($item[2] - $minYear) / ($maxYear - $minYear), // tahun_terbit (dinormalisasi)
-                $item[3], // nama_kategori
+        foreach ($books as $book) {
+            $features[] = [
+                $labelEncoder->encode($book->kategori->nama_kategori),
+                $labelEncoder->encode($book->kategori->sub_kategori)
             ];
         }
-        return $normalizedData;
+
+        return $features;
     }
 
-
-    private function labelEncode(string $value): int
+    private function normalizeFeatures(array $features): array
     {
-        static $labels = [];
-        if (!isset($labels[$value])) {
-            $labels[$value] = count($labels) + 1;
-        }
-        return $labels[$value];
+        return $features;
     }
 
-    private function hierarchicalClustering(array $data, int $max_clusters = 5)
+    private function performHierarchicalClustering(array $data, int $maxClusters, string $linkageMethod): array
     {
         $n = count($data);
+        $clusters = array_map(fn($i) => [$i], range(0, $n - 1));
+        $distanceMatrix = $this->buildDistanceMatrix($data);
 
-        $clusters = [];
+        while (count($clusters) > $maxClusters) {
+            // Find closest clusters
+            $closestPair = $this->findClosestClusters($clusters, $distanceMatrix, $linkageMethod);
 
-        for ($i = 0; $i < $n; $i++) {
-            $clusters[$i] = [$i];
-        }
-
-        // Loop sampai jumlah klaster mencapai max_clusters
-        while (count($clusters) > $max_clusters) {
-            $min_distance = PHP_FLOAT_MAX;
-            $cluster1 = -1;
-            $cluster2 = -1;
-
-            // Cari dua klaster terdekat
-            foreach ($clusters as $i => $clusterA) {
-                foreach ($clusters as $j => $clusterB) {
-                    if ($i >= $j) continue; // Hindari perhitungan ganda
-
-                    // Hitung jarak antar klaster (gunakan metode single linkage)
-                    $distance = $this->calculateClusterDistance($clusterA, $clusterB, $data);
-
-                    // Update jarak terdekat
-                    if ($distance < $min_distance) {
-                        $min_distance = $distance;
-                        $cluster1 = $i;
-                        $cluster2 = $j;
-                    }
-                }
+            if (!$closestPair) {
+                break;
             }
-            // Gabungkan dua klaster terdekat
+
+            [$cluster1, $cluster2] = $closestPair;
+
+            // Merge clusters
             $clusters[$cluster1] = array_merge($clusters[$cluster1], $clusters[$cluster2]);
-            // dd($clusters[$cluster2]);
             unset($clusters[$cluster2]);
         }
-        // Kembalikan hasil klaster
+
         return $clusters;
     }
 
-    private function calculateClusterDistance(array $clusterA, array $clusterB, array $data): float
+    private function buildDistanceMatrix(array $data): array
     {
-        $max_distance = 0;
+        $n = count($data);
+        $matrix = [];
 
-        // Cari jarak terjauh antara dua titik di klaster A dan B
-        foreach ($clusterA as $pointA) {
-            foreach ($clusterB as $pointB) {
-                $distance = $this->euclideanDistance($data[$pointA], $data[$pointB]);
-                if ($distance > $max_distance) {
-                    $max_distance = $distance;
+        for ($i = 0; $i < $n; $i++) {
+            for ($j = 0; $j < $n; $j++) {
+                if ($i != $j) {
+                    $matrix[$i][$j] = $this->calculateEuclideanDistance($data[$i], $data[$j]);
                 }
             }
         }
 
-        return $max_distance;
+        return $matrix;
     }
 
-    private function euclideanDistance(array $point1, array $point2): float
+    private function findClosestClusters(array $clusters, array $distanceMatrix, string $linkageMethod): ?array
     {
-        $sum = 0;
-        for ($i = 0; $i < count($point1); $i++) {
-            $sum += pow($point1[$i] - $point2[$i], 2);
+        $minDistance = PHP_FLOAT_MAX;
+        $closestPair = null;
+
+        foreach ($clusters as $i => $clusterA) {
+            foreach ($clusters as $j => $clusterB) {
+                if ($i >= $j) continue;
+
+                $distance = $this->calculateClusterDistance(
+                    $clusterA,
+                    $clusterB,
+                    $distanceMatrix,
+                    $linkageMethod
+                );
+
+                if ($distance < $minDistance) {
+                    $minDistance = $distance;
+                    $closestPair = [$i, $j];
+                }
+            }
         }
-        // dd(sqrt($sum));
-        return sqrt($sum);
+
+        return $closestPair;
+    }
+
+    private function calculateClusterDistance(
+        array $clusterA,
+        array $clusterB,
+        array $distanceMatrix,
+        string $linkageMethod
+    ): float {
+        $distances = [];
+
+        foreach ($clusterA as $pointA) {
+            foreach ($clusterB as $pointB) {
+                $distances[] = $distanceMatrix[$pointA][$pointB];
+            }
+        }
+
+        switch ($linkageMethod) {
+            case self::LINKAGE_METHODS['SINGLE']:
+                return min($distances);
+            case self::LINKAGE_METHODS['COMPLETE']:
+                return max($distances);
+            case self::LINKAGE_METHODS['AVERAGE']:
+                return array_sum($distances) / count($distances);
+            default:
+                throw new Exception('Invalid linkage method');
+        }
+    }
+
+    private function calculateEuclideanDistance(array $point1, array $point2): float
+    {
+        return sqrt(array_sum(array_map(
+            fn($i) => pow($point1[$i] - $point2[$i], 2),
+            array_keys($point1)
+        )));
+    }
+
+    private function generateClusterName(array $indices, $books): string
+    {
+        $categories = [];
+        $years = [];
+        $size = count($indices);
+
+        foreach ($indices as $index) {
+            $book = $books[$index];
+            $categories[$book->kategori->nama_kategori] = true;
+            $years[$book->tahun_terbit] = true;
+        }
+
+        $categoryNames = array_keys($categories);
+        $yearRange = $this->formatYearRange(array_keys($years));
+
+        return sprintf(
+            'Klaster %s (%d buku) - %s',
+            implode(', ', $categoryNames),
+            $size,
+            $yearRange
+        );
+    }
+
+    private function formatYearRange(array $years): string
+    {
+        sort($years);
+        $minYear = reset($years);
+        $maxYear = end($years);
+
+        return $minYear === $maxYear
+            ? "Tahun $minYear"
+            : "Tahun $minYear-$maxYear";
+    }
+
+    private function saveClusteringResults(array $clusters, $books): void
+    {
+        ClusterBuku::truncate();
+
+        foreach ($clusters as $clusterIndices) {
+            $clusterName = $this->generateClusterName($clusterIndices, $books);
+
+            foreach ($clusterIndices as $index) {
+                ClusterBuku::create([
+                    'buku_id' => $books[$index]->id,
+                    'nama_kelompok' => $clusterName
+                ]);
+            }
+        }
     }
 
     public function hasilClustering()
     {
-        // Ambil data buku beserta klaster-nya
-        $hasil = Buku::with(['kategori', 'kelompok'])->get();
+        $books = Buku::with(['kategori', 'kelompok'])->get();
 
-        $groupedData = [];
-        foreach ($hasil as $buku) {
-            $label_klaster = $buku->kelompok ? $buku->kelompok->nama_kelompok : 'Tidak Terklaster';
-            $groupedData[$label_klaster][] = $buku;
-        }
+        $groupedData = $books->groupBy(function ($book) {
+            return $book->kelompok?->nama_kelompok ?? 'Tidak Terklaster';
+        });
         // dd($groupedData);
 
-        // dd($groupedData);
-
-        // return response()->json($hasil, 200);
         return view('pages.clustering.result', [
-            'groupedData' => $groupedData
+            'groupedData' => $groupedData,
+            'menu' => 'clustering'
         ]);
+    }
+}
+
+class LabelEncoder
+{
+    private $labels = [];
+
+    public function encode(string $value): int
+    {
+        if (!isset($this->labels[$value])) {
+            $this->labels[$value] = count($this->labels) + 1;
+        }
+        return $this->labels[$value];
     }
 }

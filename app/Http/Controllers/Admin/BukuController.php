@@ -93,10 +93,12 @@ class BukuController extends Controller
         } else {
             $req['image'] = $request->gambarLama;
         }
-        $req['tag'] = implode(',', $request->tag);
+        // dd($req);
+        // $req['tag'] = implode(',', $request->tag);
 
 
         $data->update($req);
+        // dd($req);   
 
         return redirect()->route('buku.index')->with('success', 'Buku berhasil diubah');
     }

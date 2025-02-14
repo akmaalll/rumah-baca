@@ -20,6 +20,11 @@ class RoleMiddleware
             return redirect('/login')->with('error', 'Anda harus login terlebih dahulu.');
         }
 
+        // Periksa role pengguna
+        $user = Auth::user();
+        if ($user->role !== $role) {
+            return redirect('/')->with('error', 'Anda tidak memiliki akses ke halaman ini. Silahkan Login terlebih dahulu');
+        }
 
         return $next($request);
     }

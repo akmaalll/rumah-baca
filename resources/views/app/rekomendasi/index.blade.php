@@ -2,75 +2,99 @@
 
 @section('content')
     <div class="c-layout-page">
-        <!-- Slider Section -->
-        <section class="c-layout-revo-slider c-layout-revo-slider-4" dir="ltr">
-            <div class="tp-banner-container c-theme">
-                <div class="tp-banner rev_slider" data-version="5.0">
-                    <ul>
-                        <li data-transition="fade" data-slotamount="1" data-masterspeed="1000">
-                            <img alt="Banner Image" src="{{ asset('logo.png') }}" data-bgposition="center center"
-                                data-bgfit="cover" data-bgrepeat="no-repeat">
-                            <div class="tp-caption customin customout" data-x="center" data-y="center" data-hoffset=""
-                                data-voffset="-50" data-speed="500" data-start="1000" data-transform_idle="o:1;"
-                                data-transform_in="rX:0.5;scaleX:0.75;scaleY:0.75;o:0;s:500;e:Back.easeInOut;"
-                                data-transform_out="rX:0.5;scaleX:0.75;scaleY:0.75;o:0;s:500;e:Back.easeInOut;"
-                                data-splitin="none" data-splitout="none" data-elementdelay="0.1" data-endelementdelay="0.1"
-                                data-endspeed="600">
-                                <h3
-                                    class="c-main-title-circle c-font-48 c-font-bold c-font-center c-font-uppercase c-font-white c-block">
-                                    Rekomendasi Buku untuk Anda
-                                </h3>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
         <!-- Rekomendasi Buku Section -->
         <section class="c-content-box c-size-md c-bg-white">
             <div class="container p-5">
-                <form action="{{ route('user.rekomendasi.generate') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase">Update
-                        Rekomendasi</button>
-                </form>
-                <br>
+                <!-- Tombol Update Rekomendasi -->
 
+
+                <!-- Form Pilih Kategori dan Buku -->
+                <div class="card p-4 mb-5">
+                    <form method="POST" action="{{ route('simpan.preferensi') }}">
+                        @csrf
+                        <h3 class="mb-3">Pilih Kategori yang Anda Sukai:</h3>
+                        <div class="row">
+                            @foreach ($kategoris as $kategori)
+                                <div class="col-md-4 mb-2">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="kategori_id[]" value="{{ $kategori->id }}">
+                                        {{ $kategori->sub_kategori }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <h3 class="mt-4 mb-3">Pilih Buku yang Anda Sukai:</h3>
+                        <div class="row">
+                            @foreach ($bukuPopuler as $buku)
+                                <div class="col-md-4 mb-2">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" name="buku_id[]" value="{{ $buku->id }}">
+                                        {{ $buku->judul }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="form-group mt-4" style="text-align: center;">
+                            <button type="submit"
+                                class="btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase mb-4">
+                                Simpan Preferensi
+                            </button>
+                            <form action="{{ route('user.rekomendasi.generate') }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit"
+                                    class="btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase mb-4">
+                                    Update Rekomendasi
+                                </button>
+                            </form>
+                        </div>
+
+                    </form>
+
+
+                </div>
+
+                <!-- Tampilkan Rekomendasi Buku -->
                 @if ($rekomendasi->isEmpty())
-                    <p>Tidak ada rekomendasi untuk saat ini.</p>
+                    <p class="text-center">Tidak ada rekomendasi untuk saat ini.</p>
                 @else
                     <div class="row">
                         <div class="cbp-panel">
-                            <div id="filters-container" class="cbp-l-filters-buttonCenter">
+                            <div id="filters-container" class="cbp-l-filters-buttonCenter mb-4">
                                 <div data-filter="*" class="cbp-filter-item cbp-filter-item-active">All</div>
-                                <!-- Optionally, add dynamic filtering by category -->
                             </div>
 
-                            <div id="grid-container" class="cbp cbp-l-grid-masonry-projects">
+                            <div id="grid-container" class="cbp cbp-l-grid-masonry-projects row">
                                 @foreach ($rekomendasi as $rek)
-                                    <div class="cbp-item">
-                                        <div class="cbp-caption">
-                                            <div class="cbp-caption-defaultWrap">
-                                                @if ($rek->buku->image)
-                                                    <img src="{{ asset('images/buku/' . $rek->buku->image) }}"
-                                                        alt="{{ $rek->buku->judul }}" class="img-fluid book-thumbnail">
-                                                @else
-                                                    <div class="no-image-placeholder">
-                                                        <i class="fa fa-book"></i>
-                                                    </div>
-                                                @endif
+                                    <div class="cbp-item col-md-4 mb-4">
+                                        <div class="card h-100">
+                                            <div class="cbp-caption">
+                                                <div class="cbp-caption-defaultWrap text-center p-3">
+                                                    @if (!empty($rek->buku->gambar) && file_exists(public_path('images/buku/' . $rek->buku->gambar)))
+                                                        <img src="{{ asset('images/buku/' . $rek->buku->gambar) }}"
+                                                            alt="{{ $rek->buku->judul }}" class="img-fluid book-thumbnail">
+                                                    @else
+                                                        <img src="{{ asset('images/buku/no-image.png') }}"
+                                                            alt="No Image Available" class="img-fluid book-thumbnail">
+                                                    @endif
+                                                </div>
                                             </div>
-                                        </div>
-                                        <a href="#"
-                                            class="cbp-l-grid-masonry-projects-title">{{ Str::limit($rek->buku->judul, 50) }}</a>
-                                        <div class="cbp-l-grid-masonry-projects-desc">
-                                            <p class="author">{{ $rek->buku->penulis }}</p>
-                                            <p class="year">{{ $rek->buku->tahun_terbit }}</p>
-                                            <div class="tags mt-2">
-                                                @foreach (explode(',', $rek->buku->tag) as $tag)
-                                                    <span class="badge badge-primary">{{ trim($tag) }}</span>
-                                                @endforeach
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <a href="#" class="text-dark">
+                                                        {{ Str::limit($rek->buku->judul, 50) }}
+                                                    </a>
+                                                </h5>
+                                                <p class="card-text text-muted">
+                                                    <strong>Penulis:</strong> {{ $rek->buku->penulis }}<br>
+                                                    <strong>Tahun Terbit:</strong> {{ $rek->buku->tahun_terbit }}
+                                                </p>
+                                                <div class="tags mt-2">
+                                                    @foreach (explode(',', $rek->buku->tag) as $tag)
+                                                        <span class="badge badge-primary">{{ trim($tag) }}</span>
+                                                    @endforeach
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -111,15 +135,15 @@
 @push('styles')
     <style>
         .book-thumbnail {
-            width: 150px;
-            height: 200px;
+            width: 100%;
+            height: 250px;
             object-fit: cover;
             border-radius: 8px;
         }
 
         .no-image-placeholder {
-            width: 150px;
-            height: 200px;
+            width: 100%;
+            height: 250px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -137,6 +161,15 @@
         .tags .badge {
             margin-right: 5px;
             margin-bottom: 5px;
+        }
+
+        .card {
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 @endpush

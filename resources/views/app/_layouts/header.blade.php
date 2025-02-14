@@ -46,21 +46,21 @@
                                     class="c-arrow c-toggler"></span></a>
                         </li>
                         <li>
-                            <a href="" class="c-link dropdown-toggle">Sejarah<span
-                                    class="c-arrow c-toggler"></span></a>
+                            <a href="{{ route('user.rekomendasi.index') }}"
+                                class="c-link dropdown-toggle">Rekomendasi<span class="c-arrow c-toggler"></span></a>
                         </li>
-                        <li>
-                            <a href="" class="c-link dropdown-toggle">Wisata<span
-                                    class="c-arrow c-toggler"></span></a>
-                        </li>
-                        <li>
-                            <a href="" class="c-link dropdown-toggle">Event<span
-                                    class="c-arrow c-toggler"></span></a>
-                        </li>
-                        <li>
-                            <a href="{{ route('login') }}" class="c-link dropdown-toggle">login<span
-                                    class="c-arrow c-toggler"></span></a>
-                        </li>
+                        @if (!Auth::check())
+                            <li>
+                                <a href="{{ route('login') }}" class="c-link dropdown-toggle">Login<span
+                                        class="c-arrow c-toggler"></span></a>
+                            </li>
+                        @else
+                            <li>
+                                <a href="{{ route('logout') }}" class="c-link dropdown-toggle">Logout<span
+                                        class="c-arrow c-toggler"></span></a>
+                            </li>
+                        @endif
+
                     </ul>
                 </nav>
                 <!-- END: MEGA MENU --><!-- END: LAYOUT/HEADERS/MEGA-MENU -->

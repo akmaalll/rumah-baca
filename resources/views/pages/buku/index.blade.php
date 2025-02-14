@@ -42,6 +42,7 @@
                                                 <th>ISBN</th>
                                                 <th>Kategori</th>
                                                 <th>Sub Kategori</th>
+                                                <th>Deskripsi</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -53,16 +54,22 @@
                                                         {{ $loop->iteration }}
                                                     </td>
                                                     <td>
-                                                        <img src="{{ asset('images/buku/' . $v->image) }}" alt="image"
-                                                            class="rounded-circle" width="35">
+                                                        @if (!empty($v->gambar) && file_exists(public_path('images/buku/' . $v->gambar)))
+                                                            <img src="{{ asset('images/buku/' . $v->gambar) }}"
+                                                                alt="Gambar Buku" width="50">
+                                                        @else
+                                                            <img src="{{ asset('images/buku/no-image.png') }}"
+                                                                alt="" width="50">
+                                                        @endif
                                                     </td>
                                                     <td>{{ $v->judul }}</td>
                                                     <td>{{ $v->penulis }}</td>
                                                     <td>{{ $v->penerbit }}</td>
                                                     <td>{{ $v->tahun_terbit }}</td>
-                                                    <td>{{ $v->isbn }}</td> 
+                                                    <td>{{ $v->isbn }}</td>
                                                     <td>{{ $v->kategori->nama_kategori }}</td>
                                                     <td>{{ $v->kategori->sub_kategori }}</td>
+                                                    <td>{!! $v->deskripsi !!}</td>
 
                                                     <td>
                                                         <a href="{{ route('buku.edit', $v->id) }}"

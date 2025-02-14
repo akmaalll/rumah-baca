@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Apps\HomeController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Apps\RekomendasiController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Apps\PreferensiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,8 +28,16 @@ Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register/store', [AuthController::class, 'store'])->name('store.register');
+
+Route::get('/preferensi', [PreferensiController::class, 'showForm'])->name('preferensi.form');
+Route::post('/preferensi', [PreferensiController::class, 'simpanPreferensi'])->name('simpan.preferensi');
+
 Route::prefix('admin')->middleware('auth', 'role:admin')->group(function () {
-    Route::redirect('/', 'dashboard/general')->name('admin.dashboard');
+    // Route::view('/', 'pages.dashboard.index', ['menu' => 'dashboard'])->name('admin.dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
+
     Route::prefix('buku')->group(function () {
         Route::get('/', [BukuController::class, 'index'])->name('buku.index');
         Route::get('/create', [BukuController::class, 'create'])->name('buku.create');
@@ -55,7 +65,8 @@ Route::prefix('admin')->middleware('auth', 'role:admin')->group(function () {
     });
 
     Route::prefix('clustering')->group(function () {
-        Route::get('/', [ClusteringController::class, 'clusterBuku'])->name('clustering.index');
+        Route::get('/', [ClusteringController::class, 'index'])->name('clustering.index');
+        Route::get('/proses', [ClusteringController::class, 'clusterBuku'])->name('clustering.proses');
         Route::get('/hasil-cluster', [ClusteringController::class, 'hasilClustering'])->name('clustering.hasil');
     });
 });
@@ -63,12 +74,16 @@ Route::prefix('admin')->middleware('auth', 'role:admin')->group(function () {
 Route::prefix('user')->middleware('auth', 'role:user')->group(function () {
     // Rute untuk halaman utama pengguna
     Route::get('/', [HomeController::class, 'index'])->name('user.dashboard');
-
-    // Rute untuk rekomendasi buku
     Route::prefix('rekomendasi')->group(function () {
         Route::get('/', [RekomendasiController::class, 'index'])->name('user.rekomendasi.index');
         Route::post('/generate', [RekomendasiController::class, 'generate'])->name('user.rekomendasi.generate');
     });
+
+    Route::prefix('detail-buku')->group(function () {
+        Route::get('/{id}', [HomeController::class, 'detail'])->name('detail.buku');
+    });
+
+    // Rute untuk rekomendasi buku
 });
 
 
@@ -367,9 +382,9 @@ Route::prefix('auth')->group(function () {
         return view('pages.auth.login2', ['menu' => 'auth']);
     })->name('auth.login2');
 
-    Route::get('register', function () {
-        return view('pages.auth.register', ['menu' => 'auth']);
-    })->name('auth.register');
+    // Route::get('register', function () {
+    //     return view('pages.auth.register', ['menu' => 'auth']);
+    // })->name('auth.register');
 
     Route::get('reset-password', function () {
         return view('pages.auth.reset-password', ['menu' => 'auth']);
