@@ -39,17 +39,18 @@
                         <div class="form-group mt-4" style="text-align: center;">
                             <button type="submit"
                                 class="btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase mb-4">
-                                Simpan Preferensi
+                                Update Preferensi
                             </button>
-                            <form action="{{ route('user.rekomendasi.generate') }}" method="POST" style="display: inline;">
-                                @csrf
-                                <button type="submit"
-                                    class="btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase mb-4">
-                                    Update Rekomendasi
-                                </button>
-                            </form>
+
                         </div>
 
+                    </form>
+
+                    <form action="{{ route('user.rekomendasi.generate') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase mb-4">
+                            Update Rekomendasi
+                        </button>
                     </form>
 
 
@@ -88,7 +89,8 @@
                                                 </h5>
                                                 <p class="card-text text-muted">
                                                     <strong>Penulis:</strong> {{ $rek->buku->penulis }}<br>
-                                                    <strong>Tahun Terbit:</strong> {{ $rek->buku->tahun_terbit }}
+                                                    <strong>Tahun Terbit:</strong> {{ $rek->buku->tahun_terbit }}<br>
+                                                    <strong>Kategori:</strong> {{ $rek->buku->kategori->sub_kategori }}
                                                 </p>
                                                 <div class="tags mt-2">
                                                     @foreach (explode(',', $rek->buku->tag) as $tag)

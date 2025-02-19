@@ -77,7 +77,7 @@ Route::prefix('user')->middleware('auth', 'role:user')->group(function () {
     Route::prefix('rekomendasi')->group(function () {
         Route::get('/', [RekomendasiController::class, 'index'])->name('user.rekomendasi.index');
         Route::post('/generate', [RekomendasiController::class, 'generate'])->name('user.rekomendasi.generate');
-    });
+    }); 
 
     Route::prefix('detail-buku')->group(function () {
         Route::get('/{id}', [HomeController::class, 'detail'])->name('detail.buku');

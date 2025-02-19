@@ -10,7 +10,7 @@ use Exception;
 class ClusteringController extends Controller
 {
     // Constants for clustering parameters
-    private const MAX_CLUSTERS = 12;
+    private const MAX_CLUSTERS = 4;
     private const LINKAGE_METHODS = [
         'SINGLE' => 'single',
         'COMPLETE' => 'complete',

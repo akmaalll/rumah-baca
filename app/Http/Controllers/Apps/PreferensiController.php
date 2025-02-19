@@ -51,6 +51,6 @@ class PreferensiController extends Controller
             }
         }
 
-        return redirect()->route('user.dashboard')->with('success', 'Preferensi berhasil disimpan!');
+        return redirect()->route('user.rekomendasi.index')->with('success', 'Preferensi berhasil disimpan!');
     }
 }

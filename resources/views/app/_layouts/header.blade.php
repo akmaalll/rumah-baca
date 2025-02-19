@@ -41,10 +41,17 @@
                 <nav
                     class="c-mega-menu c-pull-right c-mega-menu-dark c-mega-menu-dark-mobile c-fonts-uppercase c-fonts-bold">
                     <ul class="nav navbar-nav c-theme-nav">
+                        @if (!Auth::check())
                         <li>
                             <a href="" class="c-link dropdown-toggle">Beranda<span
                                     class="c-arrow c-toggler"></span></a>
                         </li>
+                        @else
+                        <li>
+                            <a href="{{ route('user.dashboard') }}" class="c-link dropdown-toggle">Beranda<span
+                                    class="c-arrow c-toggler"></span></a>
+                        </li>
+                        @endif
                         <li>
                             <a href="{{ route('user.rekomendasi.index') }}"
                                 class="c-link dropdown-toggle">Rekomendasi<span class="c-arrow c-toggler"></span></a>
