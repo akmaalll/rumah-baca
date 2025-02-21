@@ -1,8 +1,53 @@
 @extends('layouts.auth', ['title' => 'Register'])
+
 @section('content')
     @push('styles')
         <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
         <link rel="stylesheet" href="{{ asset('library/izitoast/dist/css/iziToast.min.css') }}">
+        <style>
+            .rating {
+                display: flex;
+                flex-direction: row-reverse;
+                /* Bintang dari kanan ke kiri */
+                justify-content: start;
+                gap: 5px;
+            }
+
+            .rating input {
+                display: none;
+            }
+
+            .rating label {
+                font-size: 24px;
+                color: #ddd;
+                cursor: pointer;
+                transition: color 0.3s;
+            }
+
+            /* Efek hover dan checked */
+            .rating input:checked~label,
+            .rating label:hover,
+            .rating label:hover~label {
+                color: #f39c12;
+            }
+
+            .kategori-item {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                background: #f8f9fa;
+                padding: 10px;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+            }
+
+            .kategori-label {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+        </style>
     @endpush
 
     <div class="card card-primary" style="max-width: 600px; margin: auto;">
@@ -15,24 +60,22 @@
                 @csrf
 
                 <h5 class="mb-3">Pilih Kategori yang Anda Sukai:</h5>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <div class="form-group">
                     @foreach ($kategoris as $kategori)
-                        <label style="display: flex; align-items: center; gap: 5px;">
-                            <input type="checkbox" name="kategori_id[]" value="{{ $kategori->id }}">
-                            {{ $kategori->sub_kategori }}
-                        </label>
-                    @endforeach
-                </div>
+                        <div class="kategori-item mb-2">
+                            <div class="kategori-label">
+                                <input type="checkbox" name="kategori_id[]" value="{{ $kategori->id }}">
+                                <span>{{ $kategori->sub_kategori }}</span>
+                            </div>
 
-                <hr>
-
-                <h5 class="mb-3">Pilih Buku yang Anda Sukai:</h5>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    @foreach ($bukuPopuler as $buku)
-                        <label style="display: flex; align-items: center; gap: 5px;">
-                            <input type="checkbox" name="buku_id[]" value="{{ $buku->id }}">
-                            {{ $buku->judul }}
-                        </label>
+                            <div class="rating">
+                                @for ($i = 5; $i >= 1; $i--)
+                                    <input type="radio" id="rating_{{ $kategori->id }}_{{ $i }}"
+                                        name="rating_{{ $kategori->id }}" value="{{ $i }}">
+                                    <label for="rating_{{ $kategori->id }}_{{ $i }}">&#9733;</label>
+                                @endfor
+                            </div>
+                        </div>
                     @endforeach
                 </div>
 
@@ -45,7 +88,6 @@
             </form>
         </div>
     </div>
-
 
     @push('scripts')
         <script src="{{ asset('library/jquery-pwstrength/pwstrength.js') }}"></script>
@@ -72,3 +114,4 @@
         </script>
     @endpush
 @endsection
+        

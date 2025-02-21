@@ -33,14 +33,18 @@ class PreferensiController extends Controller
         // dd($user);
 
         // Simpan preferensi kategori
-        if ($request->has('kategori_id')) {
-            foreach ($request->kategori_id as $kategoriId) {
-                PreferensiUser::create([
+        foreach ($request->kategori_id as $kategoriId) {
+            $rating = $request->input('rating_' . $kategoriId); // Ambil rating dari input
+            // dd($rating);
+            PreferensiUser::updateOrCreate(
+                [
                     'user_id' => $user->id,
                     'kategori_id' => $kategoriId,
-                    'bobot_preferensi' => 1, // Bobot default
-                ]);
-            }
+                ],
+                [
+                    'bobot_preferensi' => $rating, // Bobot berdasarkan rating
+                ]
+            );
         }
 
         // Simpan preferensi buku

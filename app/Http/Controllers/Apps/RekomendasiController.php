@@ -46,6 +46,6 @@ class RekomendasiController extends Controller
             ->get();
         // dd($rekomendasi);
 
-        return view('app.rekomendasi.index', compact('rekomendasi', 'bukuPopuler', 'kategoris'));   
+        return view('app.rekomendasi.index', compact('rekomendasi', 'bukuPopuler', 'kategoris'));
     }
 }
