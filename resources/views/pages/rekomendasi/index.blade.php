@@ -8,7 +8,6 @@
             .rating {
                 display: flex;
                 flex-direction: row-reverse;
-                /* Bintang dari kanan ke kiri */
                 justify-content: start;
                 gap: 5px;
             }
@@ -47,6 +46,24 @@
                 align-items: center;
                 gap: 10px;
             }
+
+            /* Nonaktifkan bintang rating secara default */
+            .rating input[type="radio"] {
+                pointer-events: none;
+            }
+
+            .rating label {
+                opacity: 0.5;
+            }
+
+            /* Aktifkan bintang rating ketika kategori dicentang */
+            .kategori-item.active .rating input[type="radio"] {
+                pointer-events: auto;
+            }
+
+            .kategori-item.active .rating label {
+                opacity: 1;
+            }
         </style>
     @endpush
 
@@ -62,9 +79,10 @@
                 <h5 class="mb-3">Pilih Kategori yang Anda Sukai:</h5>
                 <div class="form-group">
                     @foreach ($kategoris as $kategori)
-                        <div class="kategori-item mb-2">
+                        <div class="kategori-item" id="kategori_{{ $kategori->id }}">
                             <div class="kategori-label">
-                                <input type="checkbox" name="kategori_id[]" value="{{ $kategori->id }}">
+                                <input type="checkbox" name="kategori_id[]" value="{{ $kategori->id }}"
+                                    id="checkbox_{{ $kategori->id }}">
                                 <span>{{ $kategori->sub_kategori }}</span>
                             </div>
 
@@ -111,7 +129,22 @@
                     position: 'topRight'
                 });
             @endif
+
+            // Script untuk mengontrol bintang rating
+            document.querySelectorAll('.kategori-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const kategoriItem = this.closest('.kategori-item');
+                    if (this.checked) {
+                        kategoriItem.classList.add('active'); // Aktifkan bintang rating
+                    } else {
+                        kategoriItem.classList.remove('active'); // Nonaktifkan bintang rating
+                        // Reset bintang rating yang dipilih
+                        kategoriItem.querySelectorAll('input[type="radio"]').forEach(radio => {
+                            radio.checked = false;
+                        });
+                    }
+                });
+            });
         </script>
     @endpush
 @endsection
-        

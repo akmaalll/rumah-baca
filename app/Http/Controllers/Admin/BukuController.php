@@ -18,10 +18,8 @@ class BukuController extends Controller
     {
         $menu = 'buku';
         $buku = Buku::all();
-        $tag = Tag::all();
-        // dd($buku);
 
-        return view('pages.buku.index', compact('menu', 'buku', 'tag'));
+        return view('pages.buku.index', compact('menu', 'buku'));
     }
 
     /**
@@ -30,12 +28,10 @@ class BukuController extends Controller
     public function create()
     {
         $menu = 'buku';
-        $tag = Tag::all();
 
         $kategori = KategoriBuku::all();
-        // dd($kategori);
 
-        return view('pages.buku.create', compact('menu', 'kategori', 'tag'));
+        return view('pages.buku.create', compact('menu', 'kategori', ));
     }
 
     /**
@@ -44,14 +40,12 @@ class BukuController extends Controller
     public function store(Request $request)
     {
         $req = $request->all();
-        if ($request->hasFile('image')) {
-            $imgName =  $request->file('image')->getClientOriginalName();
+        if ($request->hasFile('gambar')) {
+            $imgName =  $request->file('gambar')->getClientOriginalName();
             $imgName = time() . '_' . $imgName;
-            $request->image->move(public_path('images/buku'), $imgName);
-            $req['image'] = $imgName;
+            $request->gambar->move(public_path('images/buku'), $imgName);
+            $req['gambar'] = $imgName;
         }
-        $req['tag'] = implode(',', $request->tag);
-        // dd($req);
 
         Buku::create($req);
         return redirect()->route('buku.index')->with('success', 'Buku berhasil ditambahkan');
@@ -72,10 +66,9 @@ class BukuController extends Controller
     {
         $menu = 'buku';
         $kategori = KategoriBuku::all();
-        $tag = Tag::all();
         $data = Buku::findOrFail($id);
-        // dd($data);
-        return view('pages.buku.edit', compact('data', 'menu', 'kategori', 'tag'));
+
+        return view('pages.buku.edit', compact('data', 'menu', 'kategori'));
     }
 
     /**
@@ -85,20 +78,17 @@ class BukuController extends Controller
     {
         $req = $request->all();
         $data = Buku::find($request->id);
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('gambar')) {
 
-            $imgName =  $request->file('image')->getClientOriginalName();
-            $request->image->move(public_path('images/buku'), $imgName);
-            $req['image'] = $imgName;
+            $imgName =  $request->file('gambar')->getClientOriginalName();
+            $request->gambar->move(public_path('images/buku'), $imgName);
+            $req['gambar'] = $imgName;
         } else {
-            $req['image'] = $request->gambarLama;
+            $req['gambar'] = $request->gambarLama;
         }
-        // dd($req);
-        // $req['tag'] = implode(',', $request->tag);
 
 
         $data->update($req);
-        // dd($req);   
 
         return redirect()->route('buku.index')->with('success', 'Buku berhasil diubah');
     }

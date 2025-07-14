@@ -41,7 +41,7 @@ class ContentBasedRecommendationService
         }
 
         // Simpan rekomendasi ke database
-        RekomendasiBuku::where('user_id', $userId)->delete(); // Hapus rekomendasi lama
+        RekomendasiBuku::where('user_id', $userId)->delete(); // Hapus rekomendasi  
         RekomendasiBuku::insert($rekomendasi);
 
         return $rekomendasi;

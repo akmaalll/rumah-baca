@@ -10,7 +10,7 @@ use Exception;
 class ClusteringController extends Controller
 {
     // Constants for clustering parameters
-    private const MAX_CLUSTERS = 4;
+    private const MAX_CLUSTERS = 5;
     private const LINKAGE_METHODS = [
         'SINGLE' => 'single',
         'COMPLETE' => 'complete',
@@ -39,7 +39,6 @@ class ClusteringController extends Controller
         $normalizedFeatures = $this->normalizeFeatures($features);
 
         try {
-            // Perform hierarchical clustering with complete linkage
             $clusters = $this->performHierarchicalClustering(
                 $normalizedFeatures,
                 self::MAX_CLUSTERS,
@@ -57,18 +56,44 @@ class ClusteringController extends Controller
 
     private function prepareFeatures($books): array
     {
+        $kategoriSet = [];
+        $subKategoriSet = [];
+
+        // Kumpulkan semua kategori dan sub-kategori unik
+        foreach ($books as $book) {
+            $kategoriSet[] = $book->kategori->nama_kategori;
+            $subKategoriSet[] = $book->kategori->sub_kategori;
+        }
+
+        // Buat nilai unik (untuk One-Hot Encoding)
+        $kategoriSet = array_values(array_unique($kategoriSet));
+        $subKategoriSet = array_values(array_unique($subKategoriSet));
+
         $features = [];
-        $labelEncoder = new LabelEncoder();
 
         foreach ($books as $book) {
-            $features[] = [
-                $labelEncoder->encode($book->kategori->nama_kategori),
-                $labelEncoder->encode($book->kategori->sub_kategori)
-            ];
+            $kategoriEncoded = array_fill(0, count($kategoriSet), 0);
+            $subKategoriEncoded = array_fill(0, count($subKategoriSet), 0);
+
+            // Temukan indeks kategori dan sub-kategori dalam daftar unik
+            $kategoriIndex = array_search($book->kategori->nama_kategori, $kategoriSet);
+            $subKategoriIndex = array_search($book->kategori->sub_kategori, $subKategoriSet);
+
+            // Set nilai 1 pada indeks yang sesuai
+            if ($kategoriIndex !== false) {
+                $kategoriEncoded[$kategoriIndex] = 1;
+            }
+            if ($subKategoriIndex !== false) {
+                $subKategoriEncoded[$subKategoriIndex] = 1;
+            }
+
+            // Gabungkan semua fitur ke dalam satu array
+            $features[] = array_merge($kategoriEncoded, $subKategoriEncoded);
         }
 
         return $features;
     }
+
 
     private function normalizeFeatures(array $features): array
     {
@@ -178,35 +203,20 @@ class ClusteringController extends Controller
     private function generateClusterName(array $indices, $books): string
     {
         $categories = [];
-        $years = [];
         $size = count($indices);
 
         foreach ($indices as $index) {
             $book = $books[$index];
-            $categories[$book->kategori->nama_kategori] = true;
-            $years[$book->tahun_terbit] = true;
+            $categories[$book->kategori->sub_kategori] = true;
         }
 
         $categoryNames = array_keys($categories);
-        $yearRange = $this->formatYearRange(array_keys($years));
 
         return sprintf(
-            'Klaster %s (%d buku) - %s',
+            'Klaster %s (%d buku)',
             implode(', ', $categoryNames),
-            $size,
-            $yearRange
+            $size
         );
-    }
-
-    private function formatYearRange(array $years): string
-    {
-        sort($years);
-        $minYear = reset($years);
-        $maxYear = end($years);
-
-        return $minYear === $maxYear
-            ? "Tahun $minYear"
-            : "Tahun $minYear-$maxYear";
     }
 
     private function saveClusteringResults(array $clusters, $books): void

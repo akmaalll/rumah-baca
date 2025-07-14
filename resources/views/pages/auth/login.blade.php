@@ -23,14 +23,6 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="d-block">
-                        <label for="password" class="control-label">Password</label>
-                        <div class="float-right">
-                            <a href="{{ route('auth.forgot-password') }}" class="text-small">
-                                Forgot Password?
-                            </a>
-                        </div>
-                    </div>
                     <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
                     <div class="invalid-feedback">
                         please fill in your password
@@ -55,15 +47,15 @@
         <script src="{{ asset('js/page/modules-toastr.js') }}"></script>
 
         <script>
-            @if(session('success'))
+            @if (session('success'))
                 iziToast.success({
                     title: 'Sukses',
                     message: "{{ session('success') }}",
                     position: 'topRight'
                 });
             @endif
-    
-            @if(session('error'))
+
+            @if (session('error'))
                 iziToast.error({
                     title: 'Error',
                     message: "{{ session('error') }}",

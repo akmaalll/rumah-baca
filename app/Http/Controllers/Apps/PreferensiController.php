@@ -19,18 +19,14 @@ class PreferensiController extends Controller
 
         // Ambil data kategori dan buku populer dari database
         $kategoris = KategoriBuku::all();
-        $bukuPopuler = Buku::whereIn('kategori_id', $kategoris->pluck('id'))
-            ->inRandomOrder() // Ambil secara acak
-            ->take(10) // Ambil 10 buku
-            ->get();
 
-        return view('pages.rekomendasi.index', compact('kategoris', 'bukuPopuler'));
+        return view('pages.rekomendasi.index', compact('kategoris'));
     }
 
     public function simpanPreferensi(Request $request)
     {
+        // dd($request->all());
         $user = Auth::user();
-        // dd($user);
 
         // Simpan preferensi kategori
         foreach ($request->kategori_id as $kategoriId) {
@@ -45,14 +41,6 @@ class PreferensiController extends Controller
                     'bobot_preferensi' => $rating, // Bobot berdasarkan rating
                 ]
             );
-        }
-
-        // Simpan preferensi buku
-        if ($request->has('buku_id')) {
-            foreach ($request->buku_id as $bukuId) {
-                // Anda bisa menyimpan preferensi buku ke tabel lain jika diperlukan
-                // Misalnya, tabel `preferensi_buku`
-            }
         }
 
         return redirect()->route('user.rekomendasi.index')->with('success', 'Preferensi berhasil disimpan!');

@@ -12,7 +12,7 @@
                         <h3 class="mb-3 text-center">Pilih Kategori yang Anda Sukai:</h3>
                         <div class="row">
                             @foreach ($kategoris as $kategori)
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <div class="kategori-item">
                                         <label class="kategori-label">
                                             <input type="checkbox" name="kategori_id[]" value="{{ $kategori->id }}">
@@ -21,25 +21,29 @@
 
                                         <!-- Rating Bintang -->
                                         <div class="rating">
-                                            @for ($i = 5; $i >= 1; $i--)
+                                            @for ($i = 1; $i <= 5; $i++)
                                                 <input type="radio" id="rating_{{ $kategori->id }}_{{ $i }}"
                                                     name="rating_{{ $kategori->id }}" value="{{ $i }}">
-                                                <label for="rating_{{ $kategori->id }}_{{ $i }}">&#9733;</label>
+                                                <label
+                                                    for="rating_{{ $kategori->id }}_{{ $i }}">{{ $i }}&#9733;</label>
                                             @endfor
+
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
 
-                        <div class="text-center mt-4">
+                        <div class="text-center mt-4 form-spacing">
                             <button type="submit" class="btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase">
                                 Update Preferensi
                             </button>
                         </div>
                     </form>
 
-                    <form action="{{ route('user.rekomendasi.generate') }}" method="POST" class="text-center mt-3">
+                    <!-- Form Update Rekomendasi -->
+                    <form action="{{ route('user.rekomendasi.generate') }}" method="POST" class="text-center mt-4">
+                        <!-- Tambahkan mt-4 di sini -->
                         @csrf
                         <button type="submit" class="btn btn-lg c-btn-square c-theme-btn c-btn-bold c-btn-uppercase">
                             Update Rekomendasi
@@ -81,7 +85,8 @@
                                                 <p class="card-text text-muted">
                                                     <strong>Penulis:</strong> {{ $rek->buku->penulis }}<br>
                                                     <strong>Tahun Terbit:</strong> {{ $rek->buku->tahun_terbit }}<br>
-                                                    <strong>Kategori:</strong> {{ $rek->buku->kategori->sub_kategori }}
+                                                    <strong>Kategori:</strong> {{ $rek->buku->kategori->sub_kategori }}<br>
+                                                    <strong>Skor Rekomendasi:</strong> {{ $rek->skor_rekomendasi }}<br>
                                                 </p>
                                                 <div class="tags mt-2">
                                                     @foreach (explode(',', $rek->buku->tag) as $tag)
@@ -127,34 +132,30 @@
 
 @push('styles')
     <style>
-        .book-thumbnail {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 8px;
+        .form-spacing {
+            margin-bottom: 2rem;
+            /* Sesuaikan nilai sesuai kebutuhan */
         }
 
-        .cbp-caption-defaultWrap {
+        .kategori-item {
             display: flex;
-            justify-content: center;
-            padding: 10px;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
         }
 
-        .tags .badge {
-            margin-right: 5px;
-            margin-bottom: 5px;
+        .kategori-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 500;
         }
 
-        .card {
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Rating Bintang */
         .rating {
             display: flex;
             flex-direction: row-reverse;
@@ -173,27 +174,37 @@
             transition: color 0.3s;
         }
 
+        /* Efek hover dan checked */
         .rating input:checked~label,
         .rating label:hover,
         .rating label:hover~label {
             color: #f39c12;
         }
 
-        .kategori-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+        /* Nonaktifkan bintang rating secara default */
+        .rating input[type="radio"] {
+            pointer-events: none;
         }
 
-        .kategori-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
+        .rating label {
+            opacity: 0.5;
+        }
+
+        /* Aktifkan bintang rating ketika kategori dicentang */
+        .kategori-item.active .rating input[type="radio"] {
+            pointer-events: auto;
+        }
+
+        .kategori-item.active .rating label {
+            opacity: 1;
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
         }
     </style>
 @endpush
